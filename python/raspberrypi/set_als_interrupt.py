@@ -23,17 +23,20 @@ TCS3430 = DFRobot_TCS3430()
 while(TCS3430.begin() == False ):
   print 'equipment id error'
 
+# Use GPIO port to monitor sensor interrupt
 gpio_int = 7
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(gpio_int, GPIO.IN)
 GPIO.add_event_detect(gpio_int, GPIO.FALLING, callback=int_callback) 
+
+#Using GPIO port to control LED of sensor
 gpio_led = 11;
 GPIO.setup(gpio_led, GPIO.OUT)
 GPIO.output(gpio_led, GPIO.HIGH)
 while(TCS3430.begin() == False ):
   print 'equipment id error'
 
-
+#Configure the sensor's ADC integration time, device waiting time, and gain
 TCS3430.enable_wait_timer(mode = True)
 TCS3430.set_wait_long_time(mode = False)
 
@@ -97,13 +100,13 @@ TCS3430.set_als_gain(gain=0)
 #high_gain =128X Gain
 #TCS3430.set_als_high_gain()
 
+# set auto zero mode
 """
   mode
     :0,Always start at zero when searching the best offset value
     :1,Always start at the previous (offset_c) with the auto-zero mechanism
 """
 TCS3430.set_auto_zero_mode(mode = 1)
-
 """
   iteration_type: 
     :0,never
@@ -112,9 +115,10 @@ TCS3430.set_auto_zero_mode(mode = 1)
 """
 TCS3430.set_auto_zero_nth_iteration(iteration_type = 0x7F)
 
+# enable als interrupt
 TCS3430.enable_int_read_clear(True)
 TCS3430.set_als_interrupt(True)
-
+TCS3430.set_sleep_after_interrupt(False)
 
 """
                         APERS                              

@@ -25,9 +25,76 @@ void setup() {
     Serial.println("TCS3430 id err");
     return 0;
   }
-  TCS3430.enableALSInterrupt(true);
-  TCS3430.setIntReadClear(true);
+// Configure the sensor's ADC integration time, device waiting time, and gain
+
+  TCS3430.enableWaitTimer(true);
+  TCS3430.enableWaitLong(false);
+  /*
+   * Maximum ALS Value=  min [CYCLES * 1024, 65535]
+   * ---------------------------------------------------------------------
+   * | aTime | Integration Cycles | Integration Time | Maximum ALS Value |
+   * ---------------------------------------------------------------------
+   * |  0x00 |         1          |       2.78ms     |        1023       |
+   * ---------------------------------------------------------------------
+   * |  0x01 |         2          |       5.56ms     |        2047       |
+   * ---------------------------------------------------------------------
+   * |  ...  |        ...         |       ...        |        ...        |
+   * ---------------------------------------------------------------------
+   * |  0x11 |         18         |       50ms       |        18431      |
+   * ---------------------------------------------------------------------
+   * |  0x40 |         65         |       181ms      |        65535      |
+   * ---------------------------------------------------------------------
+   * |  ...  |        ...         |       ...        |        ...        |
+   * ---------------------------------------------------------------------
+   * |  0xff |        256         |       711ms      |        65535      |
+   * ---------------------------------------------------------------------
+   */
+  TCS3430.setIntegrationTime(/*aTime=*/0xFF);
+  /*
+   * By asserting wlong, in register 0x8D the wait time is given in multiples of 33.4ms (12x).
+   * ----------------------------------------
+   * | wtime | Wait Cycles | Wait Time      |
+   * ----------------------------------------
+   * |  0x00 |      1      | 2.78ms/ 33.4ms |
+   * ----------------------------------------
+   * |  0x01 |      2      | 5.56ms/ 66.7ms |
+   * ----------------------------------------
+   * |  ...  |     ...     |      ...       |
+   * ----------------------------------------
+   * |  0x23 |     36      | 100ms/ 1.20s   |
+   * ----------------------------------------
+   * |  ...  |     ...     |       ...      |
+   * ----------------------------------------
+   * |  0xff |     256     |  711ms/ 8.53s  |
+   * ----------------------------------------
+   */
+  TCS3430.setWaitTime(/*wTime=*/0xFF);
+  /*
+   * AGAIN: ALS Gain Control. Sets the gain of the ALS DAC.
+   * ----------------------------------------------------------
+   * | Field Value |            ALS GAIN VALUE                |
+   * ----------------------------------------------------------
+   * |     00      |               1X Gain                    |
+   * ----------------------------------------------------------
+   * |     01      |               4X Gain                    |
+   * ----------------------------------------------------------
+   * |     10      |               16X Gain                   |
+   * ----------------------------------------------------------
+   * |     11      |               64X Gain                   |
+   * ----------------------------------------------------------
+   */
+  TCS3430.setALSGain(/*aGian=*/1);
+  //128X high gain
+  //TCS3430.setHighGAIN()
   
+// Turn on the ALS interrupt function of the device
+
+  //mode = true : enable ALS Interrupt
+  TCS3430.enableALSInterrupt(/*mode*/true);
+  //mode = true : turn on "interrupt read clear" function
+  TCS3430.setIntReadClear(/*mode*/true);
+  //mode = false : turn off "SAL" function
+  TCS3430.setSleepAfterInterrupt(/*mode*/false);
   /*
    *                       APERS                              
    * ----------------------------------------------------------
@@ -77,7 +144,6 @@ void loop() {
     Serial.println("The data obtained exceeds the set threshold");
     TCS3430.getDeviceStatus();
   }
-  // put your main code here, to run repeatedly:
   uint16_t XData = TCS3430.getXOrIR2Data();
   uint16_t YData = TCS3430.getYData();
   uint16_t ZData = TCS3430.getZData();

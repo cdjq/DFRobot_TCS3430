@@ -23,16 +23,18 @@ TCS3430 = DFRobot_TCS3430()
 while(TCS3430.begin() == False ):
   print 'equipment id error'
 
-  
+# Use GPIO port to monitor sensor interrupt
 gpio_int = 7
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(gpio_int, GPIO.IN)
 GPIO.add_event_detect(gpio_int, GPIO.FALLING, callback=int_callback) 
 
+#Using GPIO port to control LED of sensor
 gpio_led = 11;
 GPIO.setup(gpio_led, GPIO.OUT)
 GPIO.output(gpio_led, GPIO.HIGH)
 
+#Configure the ALS saturation interrupt function of the sensor
 TCS3430.enable_int_read_clear(mode=True)
 """
 Maximum ALS Value=  min [CYCLES * 1024, 65535]
@@ -55,9 +57,8 @@ Maximum ALS Value=  min [CYCLES * 1024, 65535]
 ---------------------------------------------------------------------
 """
 TCS3430.set_integration_time(atime=0x00)
-
 TCS3430.set_als_saturation_interript()
-TCS3430.enable_ir2_channel(mode= False)
+
 while True :
   Z = TCS3430.get_ch0_z_data()
   X = TCS3430.get_ch3_x_or_ir2_data()

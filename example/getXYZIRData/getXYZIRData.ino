@@ -30,11 +30,14 @@ void loop() {
   uint16_t YData = TCS3430.getYData();
   uint16_t ZData = TCS3430.getZData();
   uint16_t IR1Data = TCS3430.getIR1Data();
-  TCS3430.enableIR2(true);
+  //mode = true : enable IR2 Channel
+  TCS3430.enableIR2(/*mode*/true);
+  
   delay(100);
   uint16_t IR2Data = TCS3430.getXOrIR2Data();
   String str = "X : " + String(XData) + "    Y : " + String(YData) + "    Z : " +  String(ZData) + "    IR1 : "+String(IR1Data) + "    IR2 : "+String(IR2Data);
   Serial.println(str);
-  TCS3430.enableIR2(false);
+  //mode = false : enable IR2 Channel
+  TCS3430.enableIR2(/*mode*/false);
   delay(1000);
 }

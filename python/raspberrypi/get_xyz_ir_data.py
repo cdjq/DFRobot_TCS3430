@@ -14,7 +14,7 @@ import time
 import RPi.GPIO as GPIO
 
 TCS3430 = DFRobot_TCS3430()
-
+#Using GPIO port to control LED of sensor
 GPIO.setmode(GPIO.BOARD)
 gpio_led = 11;
 GPIO.setup(gpio_led, GPIO.OUT)

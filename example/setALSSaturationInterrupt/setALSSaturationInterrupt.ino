@@ -47,7 +47,9 @@ void setup() {
    * ---------------------------------------------------------------------
    */
   TCS3430.setIntegrationTime(/*aTime=*/0x00);
-  TCS3430.enableALSSaturationInterrupt(true); 
+  TCS3430.setIntReadClear(/*mode*/true);
+  //mode = true ： enable ALS Saturation Interrupt
+  TCS3430.enableALSSaturationInterrupt(/*mode*/true); 
 }
 void loop() {
   // put your main code here, to run repeatedly:
@@ -55,7 +57,6 @@ void loop() {
     Serial.println("The data obtained exceeds the set threshold");
     TCS3430.getDeviceStatus();
   }
-  // put your main code here, to run repeatedly:
   uint16_t XData = TCS3430.getXOrIR2Data();
   uint16_t YData = TCS3430.getYData();
   uint16_t ZData = TCS3430.getZData();
