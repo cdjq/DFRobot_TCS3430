@@ -167,6 +167,7 @@ FireBeetle esp8266 |       √      |             |            |
 FireBeetle m0 |       √      |             |            | 
 Leonardo |       √      |             |            | 
 Microbit |       √      |             |            | 
+Arduino MEGA2560 | √ | | | 
 
 
 ## History
