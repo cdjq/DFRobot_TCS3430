@@ -135,7 +135,7 @@ void setup() {
    */
   TCS3430.setInterruptPersistence(/*apers=*/0x01);
   // thresholdL\thresholdH:0-65535
-  TCS3430.setCH0IntThreshold(/*thresholdL=*/0,/*thresholdH=*/10);
+  TCS3430.setCH0IntThreshold(/*thresholdL=*/0,/*thresholdH=*/500);
   TCS3430.getDeviceStatus();
 }
 void loop() {
@@ -148,12 +148,7 @@ void loop() {
   uint16_t YData = TCS3430.getYData();
   uint16_t ZData = TCS3430.getZData();
   uint16_t IR1Data = TCS3430.getIR1Data();
-  TCS3430.enableIR2(true);
-  delay(100);
-  uint16_t IR2Data = TCS3430.getXOrIR2Data();
-  String str = "X : " + String(XData) + "    Y : " + String(YData) + "    Z : " +  String(ZData) + "    IR1 : "+String(IR1Data) + "    IR2 : "+String(IR2Data);
+  String str = "X : " + String(XData) + "    Y : " + String(YData) + "    Z : " +  String(ZData) + "    IR1 : "+String(IR1Data);
   Serial.println(str);
-  TCS3430.enableIR2(false);
-  delay(1000);
+  delay(2000);
 }
-
