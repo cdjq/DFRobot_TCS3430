@@ -21,8 +21,7 @@ Detection of XYZ tristimulus and infrared data
 
 ## Installation
 
-要使用这个库，首先下载这个库到树莓派，然后打开例程文件夹，要执行某个例程demox.py，
-在命令行中键入python demox.py执行，例如想要执行get_xyz_ir_data.py例程，您需要输入命令：
+To use this library, first download the library to Raspberry Pi, then open the routines folder. To execute one routine, demox.py, type python demox.py on the command line. To execute the get_xyz_ir_data.py routine, for example, you need to type:
 
 ```
 python get_xyz_ir_data.py
