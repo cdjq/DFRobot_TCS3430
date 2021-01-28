@@ -150,7 +150,7 @@ void setup() {
    */
   TCS3430.setInterruptPersistence(/*apers=*/0x0F);
   
-  // thresholdL\thresholdH:0-65535
+  // Set the threshold range(0-65535)
   TCS3430.setCH0IntThreshold(/*thresholdL=*/0,/*thresholdH=*/30);
   
   Serial.println("If the light data exceeds the threshold, an interrupt is triggered and a warning is printed.");
