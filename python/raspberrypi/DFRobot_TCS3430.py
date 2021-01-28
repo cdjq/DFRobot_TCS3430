@@ -123,7 +123,6 @@ class DFRobot_TCS3430:
     @param  wtime  wait time(range: 0x00 -0xff)
   '''
   def set_wait_time(self,wtime):
-
     wtime = wtime & 0xFF
     self.__wtime = wtime
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_WTIME_ADDR, wtime)
@@ -168,7 +167,6 @@ class DFRobot_TCS3430:
     @param  gain  the value of gain(range: 0x00 -0x03)
   '''
   def set_als_gain(self,gain):
-
     gain = gain & 0xFF
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)|gain)
 
@@ -226,11 +224,10 @@ class DFRobot_TCS3430:
     return value 
 
   ''' 
-  @brief  Set the ALS  128x gain 
-  @param  mode  True enable  False disenable
+    @brief  Set the ALS  128x gain 
+    @param  mode  True enable  False disenable
   '''
   def set_als_high_gain(self,mode=True):
-
     if mode == True:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG2_ADDR, self.CFG2_HIGH_GAIN_EN)
     if mode == False:
@@ -256,23 +253,21 @@ class DFRobot_TCS3430:
     if mode == False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR)|self.CFG3_SAI_DISEN)
 
-    '''
-      @brief  set az mode
-      @param  mode  0,Always start at zero when searching the best offset value  1,Always start at the previous (offset_c) with the auto-zero mechanism
-    '''
+  '''
+    @brief  set az mode
+    @param  mode  0,Always start at zero when searching the best offset value  1,Always start at the previous (offset_c) with the auto-zero mechanism
+  '''
   def set_auto_zero_mode(self,mode=0):
-
     if(mode==1):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR)|self.AZ_MODE_1)
     if(mode==0):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR)&self.AZ_MODE_0)
 
-    ''' 
-      @brief  set az nth iteration type(Run autozero automatically every nth ALS iteration)
-      @param  iteration_type  0,never  7F,only at first ALS cycle  n, every nth time
-    '''
+  ''' 
+    @brief  set az nth iteration type(Run autozero automatically every nth ALS iteration)
+    @param  iteration_type  0,never  7F,only at first ALS cycle  n, every nth time
+  '''
   def set_auto_zero_nth_iteration(self,iteration_type):
-
     iteration_type = iteration_type & 0x7F
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR)|iteration_type)
 
