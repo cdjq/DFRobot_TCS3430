@@ -1,11 +1,10 @@
-""" 
-  @file DFRobot_TCS3430.py
-  @note DFRobot_TCS3430 Class infrastructure, implementation of underlying methods
+""" file DFRobot_TCS3430.py
+  # DFRobot_TCS3430 Class infrastructure, implementation of underlying methods
   @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
   @licence     The MIT License (MIT)
   @author      [yangfeng]<feng.yang@dfrobot.com> 
-  version  V1.0
-  date  2021-01-26
+  @version  V1.0
+  @date  2021-01-26
   @get from https://www.dfrobot.com
   @url https://github.com/DFRobot/DFRobot_TCS3430
 """
@@ -80,6 +79,9 @@ class DFRobot_TCS3430:
     self.__i2cbus = smbus.SMBus(bus)
     self.__i2c_addr = self.DFRobot_TCS3430_IIC_ADDR
     self.__i2c_addr = 0x39
+    self.__wlong = 0
+    self.__atime = 0
+    self.__wtime = 0
 
   def begin(self):
     """ Set temperature and humidity
@@ -98,7 +100,7 @@ class DFRobot_TCS3430:
       return False
     return True 
 
-  def enable_wait_timer(self,mode=True):
+  def set_wait_timer(self,mode=True):
     """ enable wait timer 
     :param mode :bool
       : True enable
@@ -108,12 +110,14 @@ class DFRobot_TCS3430:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)|self.ENABLEREG_WAIT_EN)
     if mode==False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)&self.ENABLEREG_WAIT_DISEN)
+  
   def set_integration_time(self,atime):
     """ Set the internal integration time
     
     :param atime :int the internal integration time
     """
     atime = atime & 0xFF
+    self.__atime = atime
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ATIME_ADDR, atime)
 
   def set_wait_time(self,wtime):
@@ -122,6 +126,7 @@ class DFRobot_TCS3430:
     :param wtime :wait time
     """
     wtime = wtime & 0xFF
+    self.__wtime = wtime
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_WTIME_ADDR, wtime)
 
   def set_interrupt_threshold(self,ailt,aiht):
@@ -158,8 +163,10 @@ class DFRobot_TCS3430:
     """
     if mode == True:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG0_ADDR, self.CONFIG_WLONG)
+      self.__wlong = 1
     if mode == False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG0_ADDR, self.CONFIG_NO_WLONG)
+      self.__wlong = 0
       
   def set_als_gain(self,gain):
     """ Set the ALS gain 
@@ -169,53 +176,58 @@ class DFRobot_TCS3430:
     gain = gain & 0xFF
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)|gain)
 
-  def enable_ir2_channel(self,mode=True):
-    """ Access to IR channel; allows mapping of IR channel on channel 3.
-    
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
-    if mode == True:
-      self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)|self.CFG1_IR2_EN)
-    if mode == False:
-      self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)&self.CFG1_IR2_DISEN)
-
-  def get_ch0_z_data(self):
+  def get_z_data(self):
     """ get channel 0 value
     
     :return int the z data
     """
     vlaue = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH0DATAL_ADDR)
     data = vlaue | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH0DATAH_ADDR)<<8)
-    return data ;
+    return data 
 
-  def get_ch1_y_data(self):
+  def get_y_data(self):
     """ get channel 1 value
     
     :return int the y data
     """
     value = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH1DATAL_ADDR)
     value = value | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH1DATAH_ADDR)<<8)
-    return value ;
+    return value 
 
-  def get_ch2_ir1_data(self):
+  def get_ir1_data(self):
     """ get channel 2 value
     
     :return int the IR1 data 
     """
     value = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH2DATAL_ADDR)
     value = value | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH2DATAH_ADDR)<<8)
-    return value ;
+    return value 
 
-  def get_ch3_x_or_ir2_data(self):
+  def get_x_data(self):
     """ get channel 3 value
     
-    :return int the x/IR2 data
+    :return int the X data
     """
     value = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH3DATAL_ADDR)
     value = value | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH3DATAH_ADDR)<<8)
-    return value ;
+    return value 
+
+  def get_ir2_data(self):
+    """ get channel 3 value
+    
+    :return int the IR2 data
+    """
+    self.__set_ir2_channel(True)
+    if (self.__wlong):
+      delaytime = ((self.__atime+1)*2.78 + (self.__wtime+1)*33.4)/1000
+    else:
+      delaytime =((self.__atime+1)*2.78 + (self.__wtime+1)*2.78)/1000
+    time.sleep(delaytime)
+    value = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH3DATAL_ADDR)
+    value = value | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH3DATAH_ADDR)<<8)
+    self.__set_ir2_channel(False)
+    time.sleep(delaytime)
+    return value 
 
   def set_als_high_gain(self,mode=True):
     """ Set the ALS  128x gain 
@@ -229,7 +241,7 @@ class DFRobot_TCS3430:
     if mode == False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG2_ADDR, self.CFG2_HIGH_GAIN_DISEN)
 
-  def enable_int_read_clear(self,mode=True):
+  def set_int_read_clear(self,mode=True):
     """If this bit is set, all flag bits in the STATUS register will be reset whenever the STATUS register is read over I2C.
     
     :param mode :bool
@@ -284,9 +296,9 @@ class DFRobot_TCS3430:
     if(mode==True):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR)|self.ENABLEREG_ALS_INT_EN)
     if(mode==False):
-      self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3400_REG_ENABLE_ADDR)&self.ENABLEREG_ALS_INT_DISEN)
+      self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)&self.ENABLEREG_ALS_INT_DISEN)
 
-  def set_als_saturation_interript(self,mode=True):
+  def set_als_saturation_interrupt(self,mode=True):
     """ enable ALS saturation interription
     
     :param mode :bool
@@ -304,6 +316,18 @@ class DFRobot_TCS3430:
     """
     self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_STATUS_ADDR)
 
+  def __set_ir2_channel(self,mode=True):
+    """ Access to IR channel; allows mapping of IR channel on channel 3.
+    
+    :param mode :bool
+      : True enable
+      : False disenable
+    """
+    if mode == True:
+      self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)|self.CFG1_IR2_EN)
+    if mode == False:
+      self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)&self.CFG1_IR2_DISEN)
+      
   def __set_power_als_on(self):
     """ Activating the internal oscillator to permit the timers and ADC channels to operate ,and activing the ALS function
     
@@ -353,19 +377,17 @@ class DFRobot_TCS3430:
     """ Initializes all registers of the device
 
     """
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_ENABLE_ADDR, 0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_ATIME_ADDR,  0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_WTIME_ADDR,  0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_AILTL_ADDR,  0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_AILTH_ADDR,  0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_AIHTL_ADDR,  0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_AIHTH_ADDR,  0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_PERS_ADDR,   0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_CFG0_ADDR,   0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_CFG1_ADDR,   0)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_CFG2_ADDR,     0x04)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_CFG3_ADDR,     0x0C)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_AZCONFIG_ADDR, 0x7F)
-    self.__i2cbus.write_byte_data(self.__i2c_addr, self.TCS3430_REG_INTENAB_ADDR,  0)
+    self.set_wait_timer(False)
+    self.set_integration_time(False)
+    self.set_wait_time(0)
+    self.set_wait_long_time(False)
+    self.set_als_gain(0)
+    self.set_als_high_gain(False)
+    self.set_int_read_clear(False)
+    self.set_sleep_after_interrupt(False)
+    self.set_auto_zero_mode(0)
+    self.set_auto_zero_nth_iteration(0x7F)
+    self.set_als_saturation_interrupt(False)
+    self.set_als_interrupt(False)
 
     

@@ -1,28 +1,23 @@
-""" 
-  @file set_atime_wtime_gain.py
-  @brief Turn on the ambient light sense interrupt function to obtain the ambient light data within the specified range
+""" file set_atime_wtime_gain.py
+  # brief Turn on the ambient light sense interrupt function to obtain the ambient light data within the specified range
   @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
   @licence     The MIT License (MIT)
   @author      [yangfeng]<feng.yang@dfrobot.com> 
-  version  V1.0
-  date  2021-01-26
+  @version  V1.0
+  @date  2021-01-26
   @get from https://www.dfrobot.com
   @url https://github.com/DFRobot/DFRobot_SGP40
 """
 from DFRobot_TCS3430 import DFRobot_TCS3430
 import time
-import pigpio
 import RPi.GPIO as GPIO
 
 def int_callback(channel):
-  print 'The data obtained exceeds the threshold'
+  print 'WARNING: The data obtained exceeds the threshold'
   TCS3430.get_device_status()
   
-TCS3430 = DFRobot_TCS3430()
-
-while(TCS3430.begin() == False ):
-  print 'equipment id error'
-
+TCS3430 = DFRobot_TCS3430(bus = 1)
+GPIO.setwarnings(False)
 # Use GPIO port to monitor sensor interrupt
 gpio_int = 7
 GPIO.setmode(GPIO.BOARD)
@@ -30,14 +25,15 @@ GPIO.setup(gpio_int, GPIO.IN)
 GPIO.add_event_detect(gpio_int, GPIO.FALLING, callback=int_callback) 
 
 #Using GPIO port to control LED of sensor
-gpio_led = 11;
+gpio_led = 11
 GPIO.setup(gpio_led, GPIO.OUT)
 GPIO.output(gpio_led, GPIO.HIGH)
+
 while(TCS3430.begin() == False ):
-  print 'equipment id error'
+  print 'Please check that the IIC device is properly connected'
 
 #Configure the sensor's ADC integration time, device waiting time, and gain
-TCS3430.enable_wait_timer(mode = True)
+TCS3430.set_wait_timer(mode = True)
 TCS3430.set_wait_long_time(mode = False)
 
 """
@@ -108,7 +104,7 @@ TCS3430.set_als_gain(gain=0)
 """
 TCS3430.set_auto_zero_mode(mode = 1)
 """
-  iteration_type: 
+  iteration_type: range(0~0x7F)
     :0,never
     :7F,only at first ALS cycle
     :n, every nth time
@@ -116,10 +112,10 @@ TCS3430.set_auto_zero_mode(mode = 1)
 TCS3430.set_auto_zero_nth_iteration(iteration_type = 0x7F)
 
 # enable als interrupt
-TCS3430.enable_int_read_clear(True)
-TCS3430.set_als_interrupt(True)
-TCS3430.set_sleep_after_interrupt(False)
-
+TCS3430.set_int_read_clear(mode = True)
+TCS3430.set_als_interrupt(mode = True)
+TCS3430.set_sleep_after_interrupt(mode = False)
+TCS3430.get_device_status()
 """
                         APERS                              
   ----------------------------------------------------------
@@ -160,17 +156,19 @@ TCS3430.set_sleep_after_interrupt(False)
 """
 TCS3430.set_interrupt_persistence(apers=0x01)
 
-#ailt\aiht:0-65535
+#Set the threshold range(0-65535)
 TCS3430.set_interrupt_threshold(ailt=0,aiht=10)
+print 'If the light data exceeds the threshold, an interrupt is triggered and a warning is printed.\r\n'
 
-while True :
-  Z = TCS3430.get_ch0_z_data()
-  X = TCS3430.get_ch3_x_or_ir2_data()
-  Y = TCS3430.get_ch1_y_data()
-  TCS3430.enable_ir2_channel(mode= True)
-  time.sleep(0.2)
-  IR1 = TCS3430.get_ch2_ir1_data()
-  IR2 = TCS3430.get_ch3_x_or_ir2_data()
-  print 'X:%d'%X,'Y:%d'%Y,'Z:%d'%Z,'IR1:%d'%IR1,'IR2:%d'%IR2
-  TCS3430.enable_ir2_channel(mode= False)
-  time.sleep(1)
+try:
+  while True :
+    Z = TCS3430.get_z_data()
+    X = TCS3430.get_x_data()
+    Y = TCS3430.get_y_data()
+    IR1 = TCS3430.get_ir1_data()
+    IR2 = TCS3430.get_ir2_data()
+    print 'X:%d'%X,'Y:%d'%Y,'Z:%d'%Z,'IR1:%d'%IR1,'IR2:%d'%IR2
+    time.sleep(1)
+    
+except KeyboardInterrupt:
+  GPIO.cleanup()    

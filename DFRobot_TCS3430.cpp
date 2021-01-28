@@ -13,6 +13,9 @@
 DFRobot_TCS3430::DFRobot_TCS3430(TwoWire *pWire):
 _pWire(pWire),_deviceAddr(DFRobot_TCS3430_ICC_ADDR)
 {
+  _atime = 0;
+  _wtime = 0;
+  _wlong = 0;
   _enableReg.pon = 0;
   _enableReg.aen = 0;
   _enableReg.reservedBit2 = 0;
@@ -53,11 +56,13 @@ bool DFRobot_TCS3430::begin()
 
 void DFRobot_TCS3430::setIntegrationTime(uint8_t aTime)
 {
+  _atime = aTime;
   write(eRegATIMEAddr,aTime);
 }
 
 void DFRobot_TCS3430::setWaitTime(uint8_t wTime)
 {
+  _wtime = wTime;
   write(eRegWTIMEAddr,wTime);
 }
 
@@ -80,7 +85,7 @@ void DFRobot_TCS3430:: disableALSADC()
   write(eRegENABLEAddr,*((uint8_t*)(&_enableReg)));
 }
 
-void DFRobot_TCS3430:: enableWaitTimer(bool mode)
+void DFRobot_TCS3430:: setWaitTimer(bool mode)
 {
   if(mode = true){
     _enableReg.wen = 1;
@@ -97,12 +102,15 @@ void DFRobot_TCS3430:: setInterruptPersistence(uint8_t apers)
   write(eRegPERSAddr,apers);
 }
 
-void DFRobot_TCS3430:: enableWaitLong(bool mode)
+void DFRobot_TCS3430:: setWaitLong(bool mode)
 {
   if(mode){
     write(eRegCFG0Addr,DFRobot_TCS3430_CONFIG_WLONG);
+    _wlong =1;
+
   }else{
     write(eRegCFG0Addr,DFRobot_TCS3430_CONFIG_NO_WLONG);
+    _wlong =0;
   }
 }
 
@@ -113,7 +121,7 @@ void DFRobot_TCS3430:: setALSGain(uint8_t aGain)
   write(eRegCFG1Addr,*((uint8_t*)(&_cfg1Reg)));
 }
 
-void DFRobot_TCS3430:: enableIR2(bool mode)
+void DFRobot_TCS3430:: setIR2Channel(bool mode)
 {
   if(mode){
     _cfg1Reg.amux=1;
@@ -155,14 +163,34 @@ uint16_t DFRobot_TCS3430:: getIR1Data()
   return read(eRegCH2DATALAddr,TWO_BYTE);
 }
 
-uint16_t DFRobot_TCS3430:: getXOrIR2Data()
+uint16_t DFRobot_TCS3430:: getXData()
 {
   return read(eRegCH3DATALAddr,TWO_BYTE);
 }
 
-void DFRobot_TCS3430:: setHighGAIN()
+uint16_t DFRobot_TCS3430:: getIR2Data()
 {
-  write(eRegCFG2Addr,DFRobot_TCS3430_HGAIN_ENABLE);
+  setIR2Channel(true);
+  uint16_t delayTime = 0;
+  if(_wlong){
+    delayTime = (_atime+1)*2.78 + (_wtime+1)*33.4;
+  }else{
+    delayTime = (_atime+1)*2.78 + (_wtime+1)*2.78; 
+  }
+  delay(delayTime);
+  uint16_t value = read(eRegCH3DATALAddr,TWO_BYTE);
+  setIR2Channel(false);
+  delay(delayTime);
+  return value;
+}
+
+void DFRobot_TCS3430:: setHighGAIN(bool mode)
+{
+  if (mode){
+    write(eRegCFG2Addr,DFRobot_TCS3430_HGAIN_ENABLE);
+  }else{
+    write(eRegCFG2Addr,DFRobot_TCS3430_HGAIN_DISABLE);
+  }
 }
 
 void DFRobot_TCS3430:: setIntReadClear(bool mode)
@@ -205,7 +233,7 @@ void DFRobot_TCS3430:: setAutoZeroNTHIteration(uint8_t value)
   write(eRegAZCONFIGAddr,*((uint8_t*)(&_AZCfgReg)));
 }
 
-void DFRobot_TCS3430:: enableALSSaturationInterrupt(bool mode )
+void DFRobot_TCS3430:: setALSSaturationInterrupt(bool mode )
 {
   if(mode){
     _intEnabReg.asien = 1;
@@ -216,7 +244,7 @@ void DFRobot_TCS3430:: enableALSSaturationInterrupt(bool mode )
   }
 }
 
-void DFRobot_TCS3430:: enableALSInterrupt(bool mode )
+void DFRobot_TCS3430:: setALSInterrupt(bool mode )
 {
   if(mode){
     _intEnabReg.aien = 1;
@@ -242,20 +270,18 @@ void DFRobot_TCS3430:: setCH0IntThreshold(uint16_t thresholdL,uint16_t threshold
 
 void DFRobot_TCS3430:: softReset()
 {
-  write(eRegENABLEAddr,0);
-  write(eRegATIMEAddr,0);
-  write(eRegWTIMEAddr,0);
-  write(eRegAILTLAddr,0);
-  write(eRegAILTHAddr,0);
-  write(eRegAIHTLAddr,0);
-  write(eRegAIHTHAddr,0);
-  write(eRegPERSAddr,0);
-  write(eRegCFG0Addr,0);
-  write(eRegCFG1Addr,0);
-  write(eRegCFG2Addr,0x04);
-  write(eRegCFG3Addr,0x0C);
-  write(eRegAZCONFIGAddr,0x7F);
-  write(eRegINTENABAddr,0);
+  setWaitTimer(false);
+  setIntegrationTime(0);
+  setWaitTime(0);
+  setWaitLong(false);
+  setALSGain(0);
+  setHighGAIN(false);
+  setIntReadClear(false);
+  setSleepAfterInterrupt(false);
+  setAutoZeroMode(0);
+  setAutoZeroNTHIteration(0x7f);
+  setALSInterrupt(false);
+  setALSSaturationInterrupt(false);
 }
 
 void DFRobot_TCS3430:: write(uint8_t regAddr,uint8_t value)

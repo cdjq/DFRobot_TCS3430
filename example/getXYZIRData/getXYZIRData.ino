@@ -14,30 +14,25 @@
 DFRobot_TCS3430 TCS3430;
 int LEDpin = 12;
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(115200);
-  while(TCS3430.begin()!=true){
-    Serial.println("TCS3430 id err");
+
+  while(!TCS3430.begin()){
+    Serial.println("Please check that the IIC device is properly connected");
+    delay(1000);
   }
+
   pinMode(LEDpin,OUTPUT);
   digitalWrite(LEDpin,HIGH);
 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  uint16_t XData = TCS3430.getXOrIR2Data();
+  uint16_t XData = TCS3430.getXData();
   uint16_t YData = TCS3430.getYData();
   uint16_t ZData = TCS3430.getZData();
   uint16_t IR1Data = TCS3430.getIR1Data();
-  //mode = true : enable IR2 Channel
-  TCS3430.enableIR2(/*mode*/true);
-  
-  delay(100);
-  uint16_t IR2Data = TCS3430.getXOrIR2Data();
+  uint16_t IR2Data = TCS3430.getIR2Data();
   String str = "X : " + String(XData) + "    Y : " + String(YData) + "    Z : " +  String(ZData) + "    IR1 : "+String(IR1Data) + "    IR2 : "+String(IR2Data);
   Serial.println(str);
-  //mode = false : enable IR2 Channel
-  TCS3430.enableIR2(/*mode*/false);
   delay(1000);
 }

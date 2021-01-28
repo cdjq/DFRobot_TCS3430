@@ -9,21 +9,32 @@
  * @get from https://www.dfrobot.com
  * @url  https://github.com/DFRobot/DFRobot_SGP40
  */
-#include<DFRobot_TCS3430.h>
+#include <DFRobot_TCS3430.h>
+
 
 DFRobot_TCS3430 TCS3430;
 
-int pinInterrupt = 13;
 int LEDpin = 12;
+int interruptPin = 2;
+
+volatile int state = 0;
+
+void handleInterrupt(){
+
+  Serial.println("WARNING:Channel 0 saturation （Z Data）");
+  state = 1;
+}
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(115200);
-  pinMode(pinInterrupt,INPUT);
+  
   pinMode(LEDpin,OUTPUT);
   digitalWrite(LEDpin,HIGH);
-  while(TCS3430.begin()!=true){
-    Serial.println("TCS3430 id err");
+  pinMode(interruptPin, INPUT_PULLUP);
+  
+  while(!TCS3430.begin()){
+    Serial.println("Please check that the IIC device is properly connected");
+    delay(1000);
   }
   
   /*
@@ -49,19 +60,16 @@ void setup() {
   TCS3430.setIntegrationTime(/*aTime=*/0x00);
   TCS3430.setIntReadClear(/*mode*/true);
   //mode = true ： enable ALS Saturation Interrupt
-  TCS3430.enableALSSaturationInterrupt(/*mode*/true); 
+  TCS3430.setALSSaturationInterrupt(/*mode*/true); 
+
+  Serial.println("If the optical data is saturated, an interrupt is triggered and a warning is printed.");
+  
+  attachInterrupt(digitalPinToInterrupt(interruptPin), handleInterrupt, FALLING);
 }
+
 void loop() {
-  // put your main code here, to run repeatedly:
-  if(digitalRead(pinInterrupt)==LOW){
-    Serial.println("The data obtained exceeds the set threshold");
-    TCS3430.getDeviceStatus();
+  if (state == 1){
+    state =0;
+    TCS3430.getDeviceStatus(); 
   }
-  uint16_t XData = TCS3430.getXOrIR2Data();
-  uint16_t YData = TCS3430.getYData();
-  uint16_t ZData = TCS3430.getZData();
-  uint16_t IR1Data = TCS3430.getIR1Data();
-  String str = "X : " + String(XData) + "    Y : " + String(YData) + "    Z : " +  String(ZData) + "    IR1 : "+String(IR1Data);
-  Serial.println(str);
-  delay(1000);
 }

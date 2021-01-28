@@ -11,24 +11,36 @@
  */
 #include <DFRobot_TCS3430.h>
 
+
 DFRobot_TCS3430 TCS3430;
-int state = 0;
-int pinInterrupt = 13;
+
 int LEDpin = 12;
+int interruptPin = 2;
+
+volatile int state = 0;
+
+void handleInterrupt(){
+
+  Serial.println("WARNING:The data obtained exceeds the threshold");
+  state = 1;
+}
+
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(115200);
-  pinMode(pinInterrupt,INPUT);
+  
   pinMode(LEDpin,OUTPUT);
   digitalWrite(LEDpin,HIGH);
-  if(TCS3430.begin()!=true){
-    Serial.println("TCS3430 id err");
-    return 0;
+  pinMode(interruptPin, INPUT_PULLUP);
+  
+  while(!TCS3430.begin()){
+    Serial.println("Please check that the IIC device is properly connected");
+    delay(1000);
   }
+  
 // Configure the sensor's ADC integration time, device waiting time, and gain
 
-  TCS3430.enableWaitTimer(true);
-  TCS3430.enableWaitLong(false);
+  TCS3430.setWaitTimer(true);
+  TCS3430.setWaitLong(false);
   /*
    * Maximum ALS Value=  min [CYCLES * 1024, 65535]
    * ---------------------------------------------------------------------
@@ -49,7 +61,7 @@ void setup() {
    * |  0xff |        256         |       711ms      |        65535      |
    * ---------------------------------------------------------------------
    */
-  TCS3430.setIntegrationTime(/*aTime=*/0xFF);
+  TCS3430.setIntegrationTime(/*aTime=*/0x00);
   /*
    * By asserting wlong, in register 0x8D the wait time is given in multiples of 33.4ms (12x).
    * ----------------------------------------
@@ -68,7 +80,7 @@ void setup() {
    * |  0xff |     256     |  711ms/ 8.53s  |
    * ----------------------------------------
    */
-  TCS3430.setWaitTime(/*wTime=*/0xFF);
+  TCS3430.setWaitTime(/*wTime=*/0x00);
   /*
    * AGAIN: ALS Gain Control. Sets the gain of the ALS DAC.
    * ----------------------------------------------------------
@@ -87,14 +99,17 @@ void setup() {
   //128X high gain
   //TCS3430.setHighGAIN()
   
-// Turn on the ALS interrupt function of the device
+/* Turn on the ALS interrupt function of the device */
 
   //mode = true : enable ALS Interrupt
-  TCS3430.enableALSInterrupt(/*mode*/true);
+  TCS3430.setALSInterrupt(/*mode*/true);
+  
   //mode = true : turn on "interrupt read clear" function
   TCS3430.setIntReadClear(/*mode*/true);
+  
   //mode = false : turn off "SAL" function
   TCS3430.setSleepAfterInterrupt(/*mode*/false);
+  
   /*
    *                       APERS                              
    * ----------------------------------------------------------
@@ -133,22 +148,19 @@ void setup() {
    * |     1111    |   60 consecutive values out of range     |
    * ----------------------------------------------------------
    */
-  TCS3430.setInterruptPersistence(/*apers=*/0x01);
+  TCS3430.setInterruptPersistence(/*apers=*/0x0F);
+  
   // thresholdL\thresholdH:0-65535
-  TCS3430.setCH0IntThreshold(/*thresholdL=*/0,/*thresholdH=*/500);
-  TCS3430.getDeviceStatus();
+  TCS3430.setCH0IntThreshold(/*thresholdL=*/0,/*thresholdH=*/30);
+  
+  Serial.println("If the light data exceeds the threshold, an interrupt is triggered and a warning is printed.");
+  
+  attachInterrupt(digitalPinToInterrupt(interruptPin), handleInterrupt, FALLING);
+
 }
 void loop() {
-  // put your main code here, to run repeatedly:
-  if(digitalRead(pinInterrupt)==LOW){
-    Serial.println("The data obtained exceeds the set threshold");
-    TCS3430.getDeviceStatus();
+  if (state == 1){
+    state =0;
+    TCS3430.getDeviceStatus(); 
   }
-  uint16_t XData = TCS3430.getXOrIR2Data();
-  uint16_t YData = TCS3430.getYData();
-  uint16_t ZData = TCS3430.getZData();
-  uint16_t IR1Data = TCS3430.getIR1Data();
-  String str = "X : " + String(XData) + "    Y : " + String(YData) + "    Z : " +  String(ZData) + "    IR1 : "+String(IR1Data);
-  Serial.println(str);
-  delay(2000);
 }

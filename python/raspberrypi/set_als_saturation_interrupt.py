@@ -1,11 +1,10 @@
-""" 
-  @file set_atime_wtime_gain.py
-  @brief Turn on the ambient light saturation interrupt function
+""" file set_atime_wtime_gain.py
+  # Turn on the ambient light saturation interrupt function
   @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
   @licence     The MIT License (MIT)
   @author      [yangfeng]<feng.yang@dfrobot.com> 
-  version  V1.0
-  date  2021-01-26
+  @version  V1.0
+  @date  2021-01-26
   @get from https://www.dfrobot.com
   @url https://github.com/DFRobot/DFRobot_SGP40
 """
@@ -14,15 +13,12 @@ import time
 import RPi.GPIO as GPIO
 
 def int_callback(channel):
-  print  'channel 0 saturation'
+  print  'WARNING: channel 0 saturation'
   TCS3430.get_device_status()
   
 
-TCS3430 = DFRobot_TCS3430()
-
-while(TCS3430.begin() == False ):
-  print 'equipment id error'
-
+TCS3430 = DFRobot_TCS3430(bus = 1)
+GPIO.setwarnings(False)
 # Use GPIO port to monitor sensor interrupt
 gpio_int = 7
 GPIO.setmode(GPIO.BOARD)
@@ -30,12 +26,15 @@ GPIO.setup(gpio_int, GPIO.IN)
 GPIO.add_event_detect(gpio_int, GPIO.FALLING, callback=int_callback) 
 
 #Using GPIO port to control LED of sensor
-gpio_led = 11;
+gpio_led = 11
 GPIO.setup(gpio_led, GPIO.OUT)
 GPIO.output(gpio_led, GPIO.HIGH)
 
+while(TCS3430.begin() == False ):
+  print 'Please check that the IIC device is properly connected.\n'
+
 #Configure the ALS saturation interrupt function of the sensor
-TCS3430.enable_int_read_clear(mode=True)
+TCS3430.set_int_read_clear(mode = True)
 """
 Maximum ALS Value=  min [CYCLES * 1024, 65535]
 ---------------------------------------------------------------------
@@ -56,17 +55,18 @@ Maximum ALS Value=  min [CYCLES * 1024, 65535]
 |  0xff |        256         |       711ms      |        65535      |
 ---------------------------------------------------------------------
 """
-TCS3430.set_integration_time(atime=0x00)
-TCS3430.set_als_saturation_interript()
+TCS3430.set_integration_time(atime=0x01)
+TCS3430.set_als_saturation_interrupt(mode = True)
+print 'If the optical data is saturated, an interrupt is triggered and a warning is printed.\r\n'
 
-while True :
-  Z = TCS3430.get_ch0_z_data()
-  X = TCS3430.get_ch3_x_or_ir2_data()
-  Y = TCS3430.get_ch1_y_data()
-  TCS3430.enable_ir2_channel(mode= True)
-  time.sleep(0.2)
-  IR1 = TCS3430.get_ch2_ir1_data()
-  IR2 = TCS3430.get_ch3_x_or_ir2_data()
-  print 'X:%d'%X,'Y:%d'%Y,'Z:%d'%Z,'IR1:%d'%IR1,'IR2:%d'%IR2
-  TCS3430.enable_ir2_channel(mode= False)
-  time.sleep(1)
+try:
+  while True :
+    Z = TCS3430.get_z_data()
+    X = TCS3430.get_x_data()
+    Y = TCS3430.get_y_data()
+    IR1 = TCS3430.get_ir1_data()
+    IR2 = TCS3430.get_ir2_data()
+    print 'X:%d'%X,'Y:%d'%Y,'Z:%d'%Z,'IR1:%d'%IR1,'IR2:%d'%IR2
+    time.sleep(1)
+except KeyboardInterrupt:
+  GPIO.cleanup() 

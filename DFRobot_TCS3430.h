@@ -343,13 +343,13 @@ public:
    * @brief  enable wait timer 
    * @param  mode  ture : enable ; false : disenable
    */
-  void enableWaitTimer(bool mode = true);
+  void setWaitTimer(bool mode = true);
 
   /**
    * @brief  Set the wait long time
    * @param  mode  ture : enable ; false : disenable
    */
-  void enableWaitLong(bool mode = true);
+  void setWaitLong(bool mode = true);
 
   /**
    * @brief  Set the internal integration time of the  four-channel ADCs
@@ -374,12 +374,6 @@ public:
    * @param  apers :ALS Interrupt Persistence
    */
   void setInterruptPersistence(uint8_t apers);
-
-  /**
-   * @brief  Access to IR channel; allows mapping of IR channel on channel 3.
-   * @param  mode  ture : enable ; false : disenable
-   */
-  void enableIR2(bool mode = true);
 
   /**
    * @brief  get device status
@@ -407,14 +401,20 @@ public:
   
   /**
    * @brief  get channel 3 value
-   * @return  the x/IR2 data
+   * @return  the x data
    */
-  uint16_t getXOrIR2Data();
-
+  uint16_t getXData();
+  
+  /**
+   * @brief  get channel 3 value
+   * @return  the IR2 data
+   */
+  uint16_t getIR2Data();
   /**
    * @brief  Set the ALS High gain 
+   * @param  mode  ture : enable ; false : disenable
    */
-  void setHighGAIN();
+  void setHighGAIN(bool mode);
 
   /**
    * @brief  If this bit is set, all flag bits in the STATUS register will be reset whenever the STATUS register is read over I2C.
@@ -447,13 +447,13 @@ public:
    * @brief  enable ALS saturation interrupt
    * @param  mode  ture : enable ; false : disenable
    */
-  void enableALSSaturationInterrupt(bool mode = true);
+  void setALSSaturationInterrupt(bool mode = true);
 
   /**
    * @brief  enable ALS interription
    * @param  mode  ture : enable ; false : disenable
    */
-  void enableALSInterrupt(bool mode = true);
+  void setALSInterrupt(bool mode = true);
 
   /**
    * @brief  Set the channel 0 interrupt threshold
@@ -463,6 +463,13 @@ public:
   void setCH0IntThreshold(uint16_t thresholdL,uint16_t thresholdH);
 
 private:
+
+  /**
+   * @brief  Access to IR channel; allows mapping of IR channel on channel 3.
+   * @param  mode  ture : enable ; false : disenable
+   */
+  void setIR2Channel(bool mode = true);
+  
   /**
    * @brief  get the revision id
    * @return the revision id
@@ -519,7 +526,9 @@ private:
   sCFG3Reg_t _cfg3Reg;
   sAZCFGReg_t _AZCfgReg;
   sINTENABReg_t _intEnabReg;
-
+  uint16_t _atime;
+  uint16_t _wtime;
+  uint8_t _wlong;
 };
 
 #endif
