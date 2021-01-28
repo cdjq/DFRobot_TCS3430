@@ -13,7 +13,7 @@ import time
 import RPi.GPIO as GPIO
 
 def int_callback(channel):
-  print  'WARNING: channel 0 saturation'
+  print  ('WARNING: channel 0 saturation')
   TCS3430.get_device_status()
   
 
@@ -31,33 +31,33 @@ GPIO.setup(gpio_led, GPIO.OUT)
 GPIO.output(gpio_led, GPIO.HIGH)
 
 while(TCS3430.begin() == False ):
-  print 'Please check that the IIC device is properly connected.\n'
+  print ('Please check that the IIC device is properly connected.\n')
 
 #Configure the ALS saturation interrupt function of the sensor
 TCS3430.set_int_read_clear(mode = True)
-"""
-Maximum ALS Value=  min [CYCLES * 1024, 65535]
----------------------------------------------------------------------
-| aTime | Integration Cycles | Integration Time | Maximum ALS Value |
----------------------------------------------------------------------
-|  0x00 |         1          |       2.78ms     |        1023       |
----------------------------------------------------------------------
-|  0x01 |         2          |       5.56ms     |        2047       |
----------------------------------------------------------------------
-|  ...  |        ...         |       ...        |        ...        |
----------------------------------------------------------------------
-|  0x11 |         18         |       50ms       |        18431      |
----------------------------------------------------------------------
-|  0x40 |         65         |       181ms      |        65535      |
----------------------------------------------------------------------
-|  ...  |        ...         |       ...        |        ...        |
----------------------------------------------------------------------
-|  0xff |        256         |       711ms      |        65535      |
----------------------------------------------------------------------
-"""
+'''
+  #Maximum ALS Value=  min [CYCLES * 1024, 65535]
+  #---------------------------------------------------------------------
+  #| aTime | Integration Cycles | Integration Time | Maximum ALS Value |
+  #---------------------------------------------------------------------
+  #|  0x00 |         1          |       2.78ms     |        1023       |
+  #---------------------------------------------------------------------
+  #|  0x01 |         2          |       5.56ms     |        2047       |
+  #---------------------------------------------------------------------
+  #|  ...  |        ...         |       ...        |        ...        |
+  #---------------------------------------------------------------------
+  #|  0x11 |         18         |       50ms       |        18431      |
+  #---------------------------------------------------------------------
+  #|  0x40 |         65         |       181ms      |        65535      |
+  #---------------------------------------------------------------------
+  #|  ...  |        ...         |       ...        |        ...        |
+  #---------------------------------------------------------------------
+  #|  0xff |        256         |       711ms      |        65535      |
+  #---------------------------------------------------------------------
+'''
 TCS3430.set_integration_time(atime=0x01)
 TCS3430.set_als_saturation_interrupt(mode = True)
-print 'If the optical data is saturated, an interrupt is triggered and a warning is printed.\r\n'
+print ('If the optical data is saturated, an interrupt is triggered and a warning is printed.\r\n')
 
 try:
   while True :
@@ -66,7 +66,7 @@ try:
     Y = TCS3430.get_y_data()
     IR1 = TCS3430.get_ir1_data()
     IR2 = TCS3430.get_ir2_data()
-    print 'X:%d'%X,'Y:%d'%Y,'Z:%d'%Z,'IR1:%d'%IR1,'IR2:%d'%IR2
+    print('X:%d'%X,'Y:%d'%Y,'Z:%d'%Z,'IR1:%d'%IR1,'IR2:%d'%IR2)
     time.sleep(1)
 except KeyboardInterrupt:
   GPIO.cleanup() 

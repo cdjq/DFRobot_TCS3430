@@ -21,7 +21,7 @@ GPIO.setup(gpio_led, GPIO.OUT)
 GPIO.output(gpio_led, GPIO.HIGH)
 
 while(TCS3430.begin() == False ):
-  print 'Please check that the IIC device is properly connected'
+  print ('Please check that the IIC device is properly connected')
 
 try:
   while True :
@@ -30,7 +30,7 @@ try:
     Y = TCS3430.get_y_data()
     IR1 = TCS3430.get_ir1_data()
     IR2 = TCS3430.get_ir2_data()
-    print 'X:%d'%X,'Y:%d'%Y,'Z:%d'%Z,'IR1:%d'%IR1,'IR2:%d'%IR2
+    print ('X:%d'%X,'Y:%d'%Y,'Z:%d'%Z,'IR1:%d'%IR1,'IR2:%d'%IR2)
     time.sleep(1)
     
 except KeyboardInterrupt:

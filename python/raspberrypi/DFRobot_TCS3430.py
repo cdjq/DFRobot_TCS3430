@@ -71,11 +71,12 @@ class DFRobot_TCS3430:
   
   TCS3430_ID                         = 0xDC
   TCS3430_REVISION_ID                = 0x41
+  
+  ''' 
+    @brief  Module init
+    @param  bus  Set to IICBus
+  '''
   def __init__(self,bus = 1):
-    """ Module init
-    
-    :param bus:int Set to IICBus
-    """
     self.__i2cbus = smbus.SMBus(bus)
     self.__i2c_addr = self.DFRobot_TCS3430_IIC_ADDR
     self.__i2c_addr = 0x39
@@ -83,13 +84,11 @@ class DFRobot_TCS3430:
     self.__atime = 0
     self.__wtime = 0
 
+  ''' 
+    @brief  Set temperature and humidity
+    @return  equipment condition, True succeed, False failed 
+  '''
   def begin(self):
-    """ Set temperature and humidity
-    
-    :return int equipment condition 
-      : 0 succeed
-      : 1 failed 
-    """
     self.__soft_reset()
     self.__set_power_als_on()
     device_id = self.__get_device_id()
@@ -100,41 +99,41 @@ class DFRobot_TCS3430:
       return False
     return True 
 
+  ''' 
+    @brief  enable wait timer 
+    @param  mode  set wait-timer,True enable False disenable
+  '''
   def set_wait_timer(self,mode=True):
-    """ enable wait timer 
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if mode==True:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)|self.ENABLEREG_WAIT_EN)
     if mode==False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)&self.ENABLEREG_WAIT_DISEN)
-  
+
+  ''' 
+    @brief  Set the internal integration time
+    @param  atime  the internal integration time(range: 0x00 -0xff)
+  '''
   def set_integration_time(self,atime):
-    """ Set the internal integration time
-    
-    :param atime :int the internal integration time
-    """
     atime = atime & 0xFF
     self.__atime = atime
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ATIME_ADDR, atime)
 
+  ''' 
+    @brief  Set wait time 
+    @param  wtime  wait time(range: 0x00 -0xff)
+  '''
   def set_wait_time(self,wtime):
-    """ Set wait time 
-    
-    :param wtime :wait time
-    """
+
     wtime = wtime & 0xFF
     self.__wtime = wtime
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_WTIME_ADDR, wtime)
 
+  ''' 
+    @brief  Set the channel 0 interrupt threshold
+    @param  ailt   the low 16 bit values(range: 0x0000 -0xffff)
+    @param  aiht   the high 16 bit values(range: 0x0000 -0xffff)
+  '''
   def set_interrupt_threshold(self,ailt,aiht):
-    """ Set the channel 0 interrupt threshold
-    
-    :param ailt :int the low 16 bit values
-    :param ailt :int the high 16 bit values
-    """
     ailtl = ailt & 0xFF
     ailth = (ailt>>8) & 0xFF
     aihtl = aiht & 0xFF
@@ -144,79 +143,76 @@ class DFRobot_TCS3430:
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AIHTL_ADDR, aihtl)
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AIHTH_ADDR, aihth)
 
+  ''' 
+    @brief  Set the channel 0 interrupt Persistence
+    @param  apers  Interrupt Persistence(range: 0x00 -0x0f)
+  '''
   def set_interrupt_persistence(self,apers):
-    """ Set the channel 0 interrupt Persistence
-    
-    :param apers :int  Interrupt Persistence
-    """
     apers = apers & 0xFF
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_PERS_ADDR, apers)
 
-
-
+  ''' 
+    @brief  Set the wait long time
+    @param  mode  True enable  False disenable
+  '''
   def set_wait_long_time(self,mode=True):
-    """ Set the wait long time
-    
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if mode == True:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG0_ADDR, self.CONFIG_WLONG)
       self.__wlong = 1
     if mode == False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG0_ADDR, self.CONFIG_NO_WLONG)
       self.__wlong = 0
-      
+
+  ''' 
+    @brief  Set the ALS gain 
+    @param  gain  the value of gain(range: 0x00 -0x03)
+  '''
   def set_als_gain(self,gain):
-    """ Set the ALS gain 
-    
-    :param gain :int the value of gain
-    """
+
     gain = gain & 0xFF
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)|gain)
 
+  ''' 
+    @brief get channel 0 value
+    @return  the z data
+  '''
   def get_z_data(self):
-    """ get channel 0 value
-    
-    :return int the z data
-    """
     vlaue = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH0DATAL_ADDR)
     data = vlaue | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH0DATAH_ADDR)<<8)
     return data 
 
+  ''' 
+    @brief get channel 1 value
+    @return  the y data
+  '''
   def get_y_data(self):
-    """ get channel 1 value
-    
-    :return int the y data
-    """
     value = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH1DATAL_ADDR)
     value = value | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH1DATAH_ADDR)<<8)
     return value 
 
+  ''' 
+    @brief get channel 2 value
+    @return  the IR1 data
+  '''
   def get_ir1_data(self):
-    """ get channel 2 value
-    
-    :return int the IR1 data 
-    """
     value = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH2DATAL_ADDR)
     value = value | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH2DATAH_ADDR)<<8)
     return value 
-
-  def get_x_data(self):
-    """ get channel 3 value
     
-    :return int the X data
-    """
+  ''' 
+    @brief get channel 3 value
+    @return  the X data
+  '''
+  def get_x_data(self):
     value = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH3DATAL_ADDR)
     value = value | (self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CH3DATAH_ADDR)<<8)
     return value 
 
+  ''' 
+    @brief get channel 3 value
+    @return  the IR2 data
+  '''
   def get_ir2_data(self):
-    """ get channel 3 value
-    
-    :return int the IR2 data
-    """
     self.__set_ir2_channel(True)
     if (self.__wlong):
       delaytime = ((self.__atime+1)*2.78 + (self.__wtime+1)*33.4)/1000
@@ -229,154 +225,139 @@ class DFRobot_TCS3430:
     time.sleep(delaytime)
     return value 
 
+  ''' 
+  @brief  Set the ALS  128x gain 
+  @param  mode  True enable  False disenable
+  '''
   def set_als_high_gain(self,mode=True):
-    """ Set the ALS  128x gain 
-    
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
+
     if mode == True:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG2_ADDR, self.CFG2_HIGH_GAIN_EN)
     if mode == False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG2_ADDR, self.CFG2_HIGH_GAIN_DISEN)
 
+  '''
+    @brief  If this bit is set, all flag bits in the STATUS register will be reset whenever the STATUS register is read over I2C. 
+    @param  mode  True enable  False disenable
+  '''
   def set_int_read_clear(self,mode=True):
-    """If this bit is set, all flag bits in the STATUS register will be reset whenever the STATUS register is read over I2C.
-    
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if mode == True:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR)|self.CFG3_INT_READ_CLEAR_EN)
     if mode == False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR)|self.CFG3_INT_READ_CLEAR_DISEN)
 
+  '''
+    @brief  Turn on sleep after interruption
+    @param  mode  True enable  False disenable
+  '''
   def set_sleep_after_interrupt(self,mode=True):
-    """ Turn on sleep after interruption
-
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if mode == True:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR)|self.CFG3_SAI_EN)
     if mode == False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR)|self.CFG3_SAI_DISEN)
 
+    '''
+      @brief  set az mode
+      @param  mode  0,Always start at zero when searching the best offset value  1,Always start at the previous (offset_c) with the auto-zero mechanism
+    '''
   def set_auto_zero_mode(self,mode=0):
-    """ set az mode
-    :param mode: int 
-      :0,Always start at zero when searching the best offset value
-      :1,Always start at the previous (offset_c) with the auto-zero mechanism
-    """
+
     if(mode==1):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR)|self.AZ_MODE_1)
     if(mode==0):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR)&self.AZ_MODE_0)
 
+    ''' 
+      @brief  set az nth iteration type(Run autozero automatically every nth ALS iteration)
+      @param  iteration_type  0,never  7F,only at first ALS cycle  n, every nth time
+    '''
   def set_auto_zero_nth_iteration(self,iteration_type):
-    """ set az nth iteration type(Run autozero automatically every nth ALS iteration)
-    :param iteration_type: int 
-      :0,never
-      :7F,only at first ALS cycle
-      :n, every nth time
-    """
+
     iteration_type = iteration_type & 0x7F
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR)|iteration_type)
 
+  '''
+    @brief  enable ambient light sensing interrupt
+    @param  mode  True enable  False disenable
+  '''
   def set_als_interrupt(self,mode=True):
-    """ enable ambient light sensing interrupt
-
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if(mode==True):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR)|self.ENABLEREG_ALS_INT_EN)
     if(mode==False):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)&self.ENABLEREG_ALS_INT_DISEN)
 
+  '''
+    @brief  enable ALS saturation interription
+    @param  mode  True enable  False disenable
+  '''
   def set_als_saturation_interrupt(self,mode=True):
-    """ enable ALS saturation interription
-    
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if(mode==True):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR)|self.ALS_SATURATION_INTERRUPT_EN)
     if(mode==False):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR)&self.ALS_SATURATION_INTERRUPT_DISEN)
 
+  '''
+    @brief  Get the status of the device
+  '''
   def get_device_status(self):
-    """ Get the status of the device
-    
-    """
     self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_STATUS_ADDR)
 
+  '''
+    @brief  Access to IR channel; allows mapping of IR channel on channel 3.
+    @param  mode  True enable  False disenable
+  '''
   def __set_ir2_channel(self,mode=True):
-    """ Access to IR channel; allows mapping of IR channel on channel 3.
-    
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if mode == True:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)|self.CFG1_IR2_EN)
     if mode == False:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG1_ADDR)&self.CFG1_IR2_DISEN)
-      
+
+  '''
+    @brief  Activating the internal oscillator to permit the timers and ADC channels to operate ,and activing the ALS function
+  '''
   def __set_power_als_on(self):
-    """ Activating the internal oscillator to permit the timers and ADC channels to operate ,and activing the ALS function
-    
-    """
+
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.ENABLEREG_ALS_EN|self.ENABLEREG_POWER_ON)
 
+  '''
+    @brief  Activating the internal oscillator to permit the timers and ADC channels to operate
+    @param  mode  True enable  False disenable
+  '''
   def __set_device_power(self,mode=True):
-    """ Activating the internal oscillator to permit the timers and ADC channels to operate
-    
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if(mode==True):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)|self.ENABLEREG_POWER_ON)
     if(mode==False):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)&self.ENABLEREG_POWER_OFF)
 
+  '''
+    @brief  Activating the four-channel ADC
+    @param  mode  True enable  False disenable
+  '''
   def __set_device_adc(self,mode=True):
-    """ Activating the four-channel ADC
-    
-    :param mode :bool
-      : True enable
-      : False disenable
-    """
     if(mode==True):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)|self.ENABLEREG_ALS_EN)
     if(mode==False):
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)&self.ENABLEREG_ALS_DISEN)
 
+  '''
+    @brief  get the revision id
+    @return  the revision id
+  '''
   def __get_revision_id(self):
-    """ get the revision id
-    
-    :return int the revision id
-    """
     return self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_REVID_ADDR)
 
+  '''
+    @brief  get the device id
+    @return  the device id
+  '''
   def __get_device_id(self):
-    """ get the device id
-    
-    :return int the device id
-    """
     a = self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ID_ADDR)
     return a
 
+  '''
+    @brief  Initializes all registers of the device
+  '''
   def __soft_reset(self):
-    """ Initializes all registers of the device
-
-    """
     self.set_wait_timer(False)
     self.set_integration_time(False)
     self.set_wait_time(0)
