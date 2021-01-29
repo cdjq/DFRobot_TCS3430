@@ -7,7 +7,7 @@
  * @version  V1.0
  * @date  2021-01-26
  * @get from https://www.dfrobot.com
- * @url  https://github.com/DFRobot/DFRobot_SGP40
+ * @url  https://github.com/DFRobot/DFRobot_TCS3430
  */
 #include <DFRobot_TCS3430.h>
 
