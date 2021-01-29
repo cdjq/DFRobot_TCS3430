@@ -1,12 +1,13 @@
 """ file set_atime_wtime_gain.py
-  # Turn on the ambient light saturation interrupt function
-  @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
-  @licence     The MIT License (MIT)
-  @author      [yangfeng]<feng.yang@dfrobot.com> 
-  @version  V1.0
-  @date  2021-01-26
-  @get from https://www.dfrobot.com
-  @url https://github.com/DFRobot/DFRobot_SGP40
+  # @brief Turn on the ambient light saturation interrupt function
+  # @n The experimental phenomena：If the optical data is saturated, the serial port will output a warning
+  # @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+  # @licence     The MIT License (MIT)
+  # @author      [yangfeng]<feng.yang@dfrobot.com> 
+  # version  V1.0
+  # date  2021-01-26
+  # @get from https://www.dfrobot.com
+  # @url https://github.com/DFRobot/DFRobot_TCS3430
 """
 from DFRobot_TCS3430 import DFRobot_TCS3430
 import time
