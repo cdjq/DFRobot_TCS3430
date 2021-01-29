@@ -1,12 +1,13 @@
 """ file set_atime_wtime_gain.py
   # brief Turn on the ambient light sense interrupt function to obtain the ambient light data within the specified range
-  @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
-  @licence     The MIT License (MIT)
-  @author      [yangfeng]<feng.yang@dfrobot.com> 
-  @version  V1.0
-  @date  2021-01-26
-  @get from https://www.dfrobot.com
-  @url https://github.com/DFRobot/DFRobot_SGP40
+  # @n The experimental phenomena：The serial port will output a warning if the optical data exceeds the threshold
+  # @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+  # @licence     The MIT License (MIT)
+  # @author      [yangfeng]<feng.yang@dfrobot.com> 
+  # version  V1.0
+  # date  2021-01-26
+  # @get from https://www.dfrobot.com
+  # @url https://github.com/DFRobot/DFRobot_TCS3430
 """
 from DFRobot_TCS3430 import DFRobot_TCS3430
 import time
