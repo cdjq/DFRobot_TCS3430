@@ -1,7 +1,7 @@
 /*!
  * @file DFRobot_TCS3430.h
  * @brief Define the infrastructure for the DFRobot_TCS3430 class
- * @n This is a DFRobot_TCS3430 sensor that supports IIC communication. The IIC address is immutable,0x39. The functions are as follows:
+ * @n This is a DFRobot_TCS3430 sensor that supports IIC communication. The IIC address cannot be changed, default to 0x39. The functions are as follows:
  * @n Function Detection of XYZ tristimulus and infrared data
  * @copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @SKU SEN0403
@@ -323,7 +323,7 @@ public:
 public:
   /**
    * @brief  constructed function
-   * @param  pWire  When constructing a device, you can specify its twowire
+   * @param  pWire  When instantiate this class, you can specify its twowire
    */
   DFRobot_TCS3430(TwoWire *pWire=&Wire);
   
