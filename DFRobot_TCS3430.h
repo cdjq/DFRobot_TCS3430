@@ -340,13 +340,13 @@ public:
   bool begin();
 
   /**
-   * @brief  enable wait timer 
+   * @brief  Config the wait timer 
    * @param  mode  ture : enable ; false : disenable
    */
   void setWaitTimer(bool mode = true);
 
   /**
-   * @brief  Set the wait long time
+   * @brief  Set the function of wait long time
    * @param  mode  ture : enable ; false : disenable
    */
   void setWaitLong(bool mode = true);
@@ -358,7 +358,7 @@ public:
   void setIntegrationTime(uint8_t aTime);
 
   /**
-   * @brief  enable wait timer 
+   * @brief  set wait time 
    * @param  wTime  wait time   * @param  wTime  wait time
    */
   void setWaitTime(uint8_t wTime);
@@ -423,7 +423,7 @@ public:
   void setIntReadClear(bool mode = true);
 
   /**
-   * @brief  Turn on sleep after interruption
+   * @brief  Config the function of 'sleep after interruption'
    * @param  mode  ture : enable ; false : disenable
    */
   void setSleepAfterInterrupt(bool mode = true);
@@ -444,13 +444,13 @@ public:
   void setAutoZeroNTHIteration(uint8_t value);
 
   /**
-   * @brief  enable ALS saturation interrupt
+   * @brief  Config the ALS saturation interruption
    * @param  mode  ture : enable ; false : disenable
    */
   void setALSSaturationInterrupt(bool mode = true);
 
   /**
-   * @brief  enable ALS interription
+   * @brief  Config the ALS interruption
    * @param  mode  ture : enable ; false : disenable
    */
   void setALSInterrupt(bool mode = true);
