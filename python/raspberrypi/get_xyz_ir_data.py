@@ -1,12 +1,13 @@
 """ file set_atime_wtime_gain.py
-  # Detection of XYZ tristimulus and infrared data
-  @ copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
-  @ licence     The MIT License (MIT)
-  @ author      [yangfeng]<feng.yang@dfrobot.com> 
-  @ version  V1.0
-  @ date  2021-01-26
-  @ get from https://www.dfrobot.com
-  @ url https://github.com/DFRobot/DFRobot_SGP40
+  # @brief Detection of XYZ tristimulus and infrared data
+  # @n The experimental phenomena：The serial port outputs the optical data obtained once a second
+  # @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+  # @licence     The MIT License (MIT)
+  # @author      [yangfeng]<feng.yang@dfrobot.com> 
+  # version  V1.0
+  # date  2021-01-26
+  # @get from https://www.dfrobot.com
+  # @url https://github.com/DFRobot/DFRobot_SGP40
 """
 from DFRobot_TCS3430 import DFRobot_TCS3430
 import time
