@@ -335,7 +335,7 @@ public:
   
   /**
    * @brief  Initialization function
-   * @return return true succeed ;return false failed.
+   * @return Whether the device is on or not. return true succeed ;return false failed.
    */
   bool begin();
 
@@ -359,7 +359,7 @@ public:
 
   /**
    * @brief  set wait time 
-   * @param  wTime  wait time   * @param  wTime  wait time
+   * @param  wTime  wait time 
    */
   void setWaitTime(uint8_t wTime);
 
