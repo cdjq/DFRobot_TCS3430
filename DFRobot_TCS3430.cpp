@@ -2,7 +2,7 @@
 *@file DFRobot_TCS3430.cpp
 *@brief Implementation of DFRobot_TCS3430 class
 *@copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
-*@SKU SEN0392
+*@SKU SEN0403
 *@licence The MIT License (MIT)
 *@author [yangfeng]<feng.yang@dfrobot.com>
 *@version V1.0
