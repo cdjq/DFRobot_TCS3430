@@ -1,14 +1,14 @@
-/**
-*@file DFRobot_TCS3430.cpp
-*@brief Implementation of DFRobot_TCS3430 class
-*@copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
-*@SKU SEN0403
-*@licence The MIT License (MIT)
-*@author [yangfeng]<feng.yang@dfrobot.com>
-*@version V1.0
-*@date 2021-01-26
-*@url  https://github.com/DFRobot/DFRobot_TCS3400
-*/
+/*!
+ * @file DFRobot_TCS3430.cpp
+ * @brief Implementation of DFRobot_TCS3430 class
+ * @copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ * @SKU SEN0403
+ * @licence The MIT License (MIT)
+ * @author [yangfeng]<feng.yang@dfrobot.com>
+ * @version V1.0
+ * @date 2021-01-26
+ * @url  https://github.com/DFRobot/DFRobot_TCS3400
+ */
 #include <DFRobot_TCS3430.h>
 DFRobot_TCS3430::DFRobot_TCS3430(TwoWire *pWire):
 _pWire(pWire),_deviceAddr(DFRobot_TCS3430_ICC_ADDR)
