@@ -1,16 +1,16 @@
-/**
-*@file DFRobot_TCS3430.h
-*@brief Define the infrastructure for the DFRobot_TCS3430 class
-*@n This is a DFRobot_TCS3430 sensor that supports IIC communication. The IIC address is immutable,0x39. The functions are as follows:
-*@n Function Detection of XYZ tristimulus and infrared data
-*@copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
-*@SKU SEN0403
-*@licence The MIT License (MIT)
-*@author [yangfeng]<feng.yang@dfrobot.com>
-*@version V1.0
-*@date 2021-01-26
-*@url  https://github.com/DFRobot/DFRobot_TCS3400
-*/
+/*!
+ * @file DFRobot_TCS3430.h
+ * @brief Define the infrastructure for the DFRobot_TCS3430 class
+ * @n This is a DFRobot_TCS3430 sensor that supports IIC communication. The IIC address is immutable,0x39. The functions are as follows:
+ * @n Function Detection of XYZ tristimulus and infrared data
+ * @copyright Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ * @SKU SEN0403
+ * @licence The MIT License (MIT)
+ * @author [yangfeng]<feng.yang@dfrobot.com>
+ * @version V1.0
+ * @date 2021-01-26
+ * @url  https://github.com/DFRobot/DFRobot_TCS3400
+ */
 #ifndef __DFRobot_TCS3430_H__
 #define __DFRobot_TCS3430_H__
 #include <Arduino.h>
