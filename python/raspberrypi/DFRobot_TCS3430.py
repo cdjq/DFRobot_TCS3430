@@ -85,8 +85,8 @@ class DFRobot_TCS3430:
     self.__wtime = 0
 
   ''' 
-    @brief  Set temperature and humidity
-    @return  equipment condition, True succeed, False failed 
+    @brief  Initialize the device and turn it on
+    @return  Whether the device is on or not. True succeed, False failed 
   '''
   def begin(self):
     self.__soft_reset()
@@ -100,7 +100,7 @@ class DFRobot_TCS3430:
     return True 
 
   ''' 
-    @brief  enable wait timer 
+    @brief  Config the wait timer 
     @param  mode  set wait-timer,True enable False disenable
   '''
   def set_wait_timer(self,mode=True):
@@ -244,7 +244,7 @@ class DFRobot_TCS3430:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR)|self.CFG3_INT_READ_CLEAR_DISEN)
 
   '''
-    @brief  Turn on sleep after interruption
+    @brief  Config the function of 'sleep after interruption'
     @param  mode  True enable  False disenable
   '''
   def set_sleep_after_interrupt(self,mode=True):
@@ -254,7 +254,7 @@ class DFRobot_TCS3430:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_CFG3_ADDR)|self.CFG3_SAI_DISEN)
 
   '''
-    @brief  set az mode
+    @brief  set aotuzero mode
     @param  mode  0,Always start at zero when searching the best offset value  1,Always start at the previous (offset_c) with the auto-zero mechanism
   '''
   def set_auto_zero_mode(self,mode=0):
@@ -264,7 +264,7 @@ class DFRobot_TCS3430:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR)&self.AZ_MODE_0)
 
   ''' 
-    @brief  set az nth iteration type(Run autozero automatically every nth ALS iteration)
+    @brief  set autozero automatically every nth ALS iteration)
     @param  iteration_type  0,never  7F,only at first ALS cycle  n, every nth time
   '''
   def set_auto_zero_nth_iteration(self,iteration_type):
@@ -272,7 +272,7 @@ class DFRobot_TCS3430:
     self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_AZCONFIG_ADDR)|iteration_type)
 
   '''
-    @brief  enable ambient light sensing interrupt
+    @brief  Config the ambient light sensing interruption
     @param  mode  True enable  False disenable
   '''
   def set_als_interrupt(self,mode=True):
@@ -282,7 +282,7 @@ class DFRobot_TCS3430:
       self.__i2cbus.write_byte_data(self.__i2c_addr,self.TCS3430_REG_INTENAB_ADDR, self.__i2cbus.read_byte_data(self.__i2c_addr,self.TCS3430_REG_ENABLE_ADDR)&self.ENABLEREG_ALS_INT_DISEN)
 
   '''
-    @brief  enable ALS saturation interription
+    @brief  Config the ALS saturation interription
     @param  mode  True enable  False disenable
   '''
   def set_als_saturation_interrupt(self,mode=True):
