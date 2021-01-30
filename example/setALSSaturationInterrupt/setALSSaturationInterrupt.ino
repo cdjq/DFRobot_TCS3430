@@ -57,7 +57,7 @@ void setup() {
    * |  0xff |        256         |       711ms      |        65535      |
    * ---------------------------------------------------------------------
    */
-  TCS3430.setIntegrationTime(/*aTime=*/0x00);
+  TCS3430.setIntegrationTime(/*aTime=*/0x23);
   TCS3430.setIntReadClear(/*mode*/true);
   //mode = true ： enable ALS Saturation Interrupt
   TCS3430.setALSSaturationInterrupt(/*mode*/true); 
