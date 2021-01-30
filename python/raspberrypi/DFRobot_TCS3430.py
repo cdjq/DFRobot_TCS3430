@@ -79,7 +79,6 @@ class DFRobot_TCS3430:
   def __init__(self,bus = 1):
     self.__i2cbus = smbus.SMBus(bus)
     self.__i2c_addr = self.DFRobot_TCS3430_IIC_ADDR
-    self.__i2c_addr = 0x39
     self.__wlong = 0
     self.__atime = 0
     self.__wtime = 0
