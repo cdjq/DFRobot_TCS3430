@@ -271,10 +271,10 @@ void DFRobot_TCS3430:: setCH0IntThreshold(uint16_t thresholdL,uint16_t threshold
 void DFRobot_TCS3430:: softReset()
 {
   setWaitTimer(false);
-  setIntegrationTime(0);
+  setIntegrationTime(0x23);
   setWaitTime(0);
   setWaitLong(false);
-  setALSGain(0);
+  setALSGain(3);
   setHighGAIN(false);
   setIntReadClear(false);
   setSleepAfterInterrupt(false);
