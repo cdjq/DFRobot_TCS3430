@@ -353,10 +353,10 @@ class DFRobot_TCS3430:
   '''
   def __soft_reset(self):
     self.set_wait_timer(False)
-    self.set_integration_time(False)
+    self.set_integration_time(0x23)
     self.set_wait_time(0)
     self.set_wait_long_time(False)
-    self.set_als_gain(0)
+    self.set_als_gain(3)
     self.set_als_high_gain(False)
     self.set_int_read_clear(False)
     self.set_sleep_after_interrupt(False)
