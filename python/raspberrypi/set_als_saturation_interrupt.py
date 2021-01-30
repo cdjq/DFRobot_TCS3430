@@ -56,7 +56,7 @@ TCS3430.set_int_read_clear(mode = True)
   #|  0xff |        256         |       711ms      |        65535      |
   #---------------------------------------------------------------------
 '''
-TCS3430.set_integration_time(atime=0x01)
+TCS3430.set_integration_time(atime=0x23)
 TCS3430.set_als_saturation_interrupt(mode = True)
 print ('If the optical data is saturated, an interrupt is triggered and a warning is printed.\r\n')
 
