@@ -170,7 +170,10 @@ uint16_t DFRobot_TCS3430:: getXData()
 
 uint16_t DFRobot_TCS3430:: getIR2Data()
 {
+  disableALSADC();
   setIR2Channel(true);
+  _enableReg.aen = 1;
+  write(eRegENABLEAddr,*((uint8_t*)(&_enableReg)));
   uint16_t delayTime = 0;
   if(_wlong){
     delayTime = (_atime+1)*2.78 + (_wtime+1)*33.4;
@@ -179,7 +182,10 @@ uint16_t DFRobot_TCS3430:: getIR2Data()
   }
   delay(delayTime);
   uint16_t value = read(eRegCH3DATALAddr,TWO_BYTE);
+  disableALSADC();
   setIR2Channel(false);
+  _enableReg.aen = 1;
+  write(eRegENABLEAddr,*((uint8_t*)(&_enableReg)));
   delay(delayTime);
   return value;
 }
