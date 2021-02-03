@@ -115,43 +115,43 @@ void setup() {
    * ----------------------------------------------------------
    * | Field Value |            Persistence                   |
    * ----------------------------------------------------------
-   * |     0000    |   Every ALS cycle generates an interrupt |
+   * |     0x00    |   Every ALS cycle generates an interrupt |
    * ----------------------------------------------------------
-   * |     0001    |   Any value outside of threshold range   |
+   * |     0x01    |   Any value outside of threshold range   |
    * ----------------------------------------------------------
-   * |     0010    |   2 consecutive values out of range      |
+   * |     0x02    |   2 consecutive values out of range      |
    * ----------------------------------------------------------
-   * |     0011    |   3 consecutive values out of range      |
+   * |     0x03    |   3 consecutive values out of range      |
    * ----------------------------------------------------------
-   * |     0100    |   5 consecutive values out of range      |
+   * |     0x04    |   5 consecutive values out of range      |
    * ----------------------------------------------------------
-   * |     0101    |   10 consecutive values out of range     |
+   * |     0x05    |   10 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     0110    |   15 consecutive values out of range     |
+   * |     0x06    |   15 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     0111    |   20 consecutive values out of range     |
+   * |     0x07    |   20 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     1000    |   25 consecutive values out of range     |
+   * |     0x08    |   25 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     1001    |   30 consecutive values out of range     |
+   * |     0x09    |   30 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     1010    |   35 consecutive values out of range     |
+   * |     0x0A    |   35 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     1011    |   40 consecutive values out of range     |
+   * |     0x0B    |   40 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     1100    |   45 consecutive values out of range     |
+   * |     0x0C    |   45 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     1101    |   50 consecutive values out of range     |
+   * |     0x0D    |   50 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     1110    |   55 consecutive values out of range     |
+   * |     0x0E    |   55 consecutive values out of range     |
    * ----------------------------------------------------------
-   * |     1111    |   60 consecutive values out of range     |
+   * |     0x0F    |   60 consecutive values out of range     |
    * ----------------------------------------------------------
    */
-  TCS3430.setInterruptPersistence(/*apers=*/0x0F);
+  TCS3430.setInterruptPersistence(/*apers=*/0x05);
   
   // Set the threshold range(0-65535)
-  TCS3430.setCH0IntThreshold(/*thresholdL=*/0,/*thresholdH=*/30);
+  TCS3430.setCH0IntThreshold(/*thresholdL=*/50,/*thresholdH=*/100);
   
   Serial.println("If the light data exceeds the threshold, an interrupt is triggered and a warning is printed.");
   
