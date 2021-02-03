@@ -27,16 +27,14 @@ void handleInterrupt(){
 
 void setup() {
   Serial.begin(115200);
-  
-  pinMode(LEDpin,OUTPUT);
-  digitalWrite(LEDpin,HIGH);
+
   pinMode(interruptPin, INPUT_PULLUP);
-  
+
   while(!TCS3430.begin()){
     Serial.println("Please check that the IIC device is properly connected");
     delay(1000);
   }
-  
+
 // Configure the sensor's ADC integration time, device waiting time, and gain
 
   TCS3430.setWaitTimer(true);
@@ -98,18 +96,18 @@ void setup() {
   TCS3430.setALSGain(/*aGian=*/3);
   //128X high gain
   //TCS3430.setHighGAIN()
-  
+
 /* Turn on the ALS interrupt function of the device */
 
   //mode = true : enable ALS Interrupt
   TCS3430.setALSInterrupt(/*mode*/true);
-  
+
   //mode = true : turn on "interrupt read clear" function
   TCS3430.setIntReadClear(/*mode*/true);
-  
+
   //mode = false : turn off "SAL" function
   TCS3430.setSleepAfterInterrupt(/*mode*/false);
-  
+
   /*
    *                       APERS                              
    * ----------------------------------------------------------
@@ -149,12 +147,12 @@ void setup() {
    * ----------------------------------------------------------
    */
   TCS3430.setInterruptPersistence(/*apers=*/0x05);
-  
+
   // Set the threshold range(0-65535)
   TCS3430.setCH0IntThreshold(/*thresholdL=*/50,/*thresholdH=*/100);
-  
+
   Serial.println("If the light data exceeds the threshold, an interrupt is triggered and a warning is printed.");
-  
+
   attachInterrupt(digitalPinToInterrupt(interruptPin), handleInterrupt, FALLING);
 
 }
@@ -162,5 +160,8 @@ void loop() {
   if (state == 1){
     state =0;
     TCS3430.getDeviceStatus(); 
+  }else{
+    Serial.println(TCS3430.getZData());
+    delay(100);
   }
 }
