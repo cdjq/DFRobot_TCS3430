@@ -1,5 +1,5 @@
 /*!
- * @file setWTimeATimeGain.ino
+ * @file getXYZIRData.ino
  * @brief Detection of XYZ tristimulus and infrared data
  * @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
@@ -12,7 +12,6 @@
 #include <DFRobot_TCS3430.h>
 
 DFRobot_TCS3430 TCS3430;
-int LEDpin = 12;
 void setup() {
   Serial.begin(115200);
 
@@ -20,10 +19,6 @@ void setup() {
     Serial.println("Please check that the IIC device is properly connected");
     delay(1000);
   }
-
-  pinMode(LEDpin,OUTPUT);
-  digitalWrite(LEDpin,HIGH);
-
 }
 
 void loop() {
