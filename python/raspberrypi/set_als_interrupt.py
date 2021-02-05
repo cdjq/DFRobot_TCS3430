@@ -34,8 +34,8 @@ while(TCS3430.begin() == False ):
   print ('Please check that the IIC device is properly connected')
 
 #Configure the sensor's ADC integration time, device waiting time, and gain
-TCS3430.set_wait_timer(mode = True)
-TCS3430.set_wait_long_time(mode = False)
+#TCS3430.set_wait_timer(mode = True)
+#TCS3430.set_wait_long_time(mode = False)
 
 '''
   #By asserting wlong, in register 0x8D the wait time is given in multiples of 33.4ms (12x).
@@ -55,7 +55,7 @@ TCS3430.set_wait_long_time(mode = False)
   #|  0xff |     256     |  711ms/ 8.53s  |
   #----------------------------------------
 '''
-TCS3430.set_wait_time(wtime = 0x00)
+#TCS3430.set_wait_time(wtime = 0x00)
 
 '''
   #Maximum ALS Value=  min [CYCLES * 1024, 65535]
@@ -97,25 +97,8 @@ TCS3430.set_als_gain(gain=3)
 #high_gain =128X Gain
 #TCS3430.set_als_high_gain()
 
-# set auto zero mode
-'''
-  #mode
-  #  :0,Always start at zero when searching the best offset value
-  #  :1,Always start at the previous (offset_c) with the auto-zero mechanism
-'''
-TCS3430.set_auto_zero_mode(mode = 1)
-'''
-  #iteration_type: range(0~0x7F)
-  #  :0,never
-  #  :7F,only at first ALS cycle
-  #  :n, every nth time
-'''
-TCS3430.set_auto_zero_nth_iteration(iteration_type = 0x7F)
-
 # enable als interrupt
-TCS3430.set_int_read_clear(mode = True)
 TCS3430.set_als_interrupt(mode = True)
-TCS3430.set_sleep_after_interrupt(mode = False)
 TCS3430.get_device_status()
 '''
   #                      APERS                              
