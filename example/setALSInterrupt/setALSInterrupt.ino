@@ -37,8 +37,27 @@ void setup() {
 
 // Configure the sensor's ADC integration time, device waiting time, and gain
 
-  TCS3430.setWaitTimer(true);
-  TCS3430.setWaitLong(false);
+  //TCS3430.setWaitTimer(true);
+  //TCS3430.setWaitLong(false);
+    /*
+   * By asserting wlong, in register 0x8D the wait time is given in multiples of 33.4ms (12x).
+   * ----------------------------------------
+   * | wtime | Wait Cycles | Wait Time      |
+   * ----------------------------------------
+   * |  0x00 |      1      | 2.78ms/ 33.4ms |
+   * ----------------------------------------
+   * |  0x01 |      2      | 5.56ms/ 66.7ms |
+   * ----------------------------------------
+   * |  ...  |     ...     |      ...       |
+   * ----------------------------------------
+   * |  0x23 |     36      | 100ms/ 1.20s   |
+   * ----------------------------------------
+   * |  ...  |     ...     |       ...      |
+   * ----------------------------------------
+   * |  0xff |     256     |  711ms/ 8.53s  |
+   * ----------------------------------------
+   */
+  //TCS3430.setWaitTime(/*wTime=*/0x00);
   /*
    * Maximum ALS Value=  min [CYCLES * 1024, 65535]
    * ---------------------------------------------------------------------
@@ -61,25 +80,6 @@ void setup() {
    */
   TCS3430.setIntegrationTime(/*aTime=*/0x23);
   /*
-   * By asserting wlong, in register 0x8D the wait time is given in multiples of 33.4ms (12x).
-   * ----------------------------------------
-   * | wtime | Wait Cycles | Wait Time      |
-   * ----------------------------------------
-   * |  0x00 |      1      | 2.78ms/ 33.4ms |
-   * ----------------------------------------
-   * |  0x01 |      2      | 5.56ms/ 66.7ms |
-   * ----------------------------------------
-   * |  ...  |     ...     |      ...       |
-   * ----------------------------------------
-   * |  0x23 |     36      | 100ms/ 1.20s   |
-   * ----------------------------------------
-   * |  ...  |     ...     |       ...      |
-   * ----------------------------------------
-   * |  0xff |     256     |  711ms/ 8.53s  |
-   * ----------------------------------------
-   */
-  TCS3430.setWaitTime(/*wTime=*/0x00);
-  /*
    * AGAIN: ALS Gain Control. Sets the gain of the ALS DAC.
    * ----------------------------------------------------------
    * | Field Value |            ALS GAIN VALUE                |
@@ -101,12 +101,6 @@ void setup() {
 
   //mode = true : enable ALS Interrupt
   TCS3430.setALSInterrupt(/*mode*/true);
-
-  //mode = true : turn on "interrupt read clear" function
-  TCS3430.setIntReadClear(/*mode*/true);
-
-  //mode = false : turn off "SAL" function
-  TCS3430.setSleepAfterInterrupt(/*mode*/false);
 
   /*
    *                       APERS                              
