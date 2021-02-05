@@ -241,6 +241,7 @@ void DFRobot_TCS3430:: setAutoZeroNTHIteration(uint8_t value)
 
 void DFRobot_TCS3430:: setALSSaturationInterrupt(bool mode )
 {
+  setIntReadClear(true);
   if(mode){
     _intEnabReg.asien = 1;
     write(eRegINTENABAddr,*((uint8_t*)(&_intEnabReg)));
@@ -252,6 +253,7 @@ void DFRobot_TCS3430:: setALSSaturationInterrupt(bool mode )
 
 void DFRobot_TCS3430:: setALSInterrupt(bool mode )
 {
+  setIntReadClear(true);
   if(mode){
     _intEnabReg.aien = 1;
     write(eRegINTENABAddr,*((uint8_t*)(&_intEnabReg)));
