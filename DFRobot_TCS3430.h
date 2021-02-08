@@ -505,7 +505,7 @@ private:
   /**
    * @brief  config register
    * @param  regAddr : register address
-   * @param  value : command
+   * @param  value : Writes the value of the register
    */
   void write(uint8_t regAddr,uint8_t value);
 
