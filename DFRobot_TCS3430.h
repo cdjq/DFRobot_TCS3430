@@ -513,6 +513,7 @@ private:
    * @brief  read register
    * @param  regAddr : register address
    * @param  readNum : Number of bytes read
+   * @return Read data from a register
    */
   uint16_t read(uint8_t regAddr,uint8_t readNum);
 
