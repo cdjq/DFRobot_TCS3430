@@ -123,13 +123,13 @@ To use this library, download the library file first, paste it into the \Arduino
 
   /**
    * @brief  set az mode
-   * @param  mode  :0,Always start at zero when searching the best offset value
-                   :1,Always start at the previous (offset_c) with the auto-zero mechanism
+   * @param  mode  :0, Always start at zero when searching the best offset value
+                   :1, Always start at the previous (offset_c) with the auto-zero mechanism
    */
   void setAutoZeroMode(uint8_t mode);
   
   /**
-   * @brief  set az nth iteration type(Run autozero automatically every nth ALS iteration)
+   * @brief  set as nth iteration type(Run autozero automatically every nth ALS iteration)
    * @param  value :0,never
                    :7,only at first ALS cycle
                    :n, every nth time
