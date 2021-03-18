@@ -173,8 +173,8 @@ Arduino MEGA2560 | √ | | |
 
 ## History
 
-- data 2021-01-28
-- version V1.0
+- Data 2021-01-28
+- Version V1.0
 
 
 ## Credits
