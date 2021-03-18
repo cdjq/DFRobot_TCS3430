@@ -200,9 +200,9 @@ typedef struct {
    * ------------------------------------------------------------------------------------------
    * |   ASAT   |       Reserved      |    AINT  |                  Reserved                  |
    * ------------------------------------------------------------------------------------------
-   * ASAT: ALS Saturation. This flag is set for analog saturation writing a 1 will clear this status flag.
+   * ASAT: ALS Saturation. This flag is set for analog saturation, writing a 1 will clear this status flag.
    * Reserved:Reserved.
-   * AINT:ALS Interrupt. Indicates that the device is asserting an ALS interrupt. writing a 1 will clear this status flag.
+   * AINT:ALS Interrupt. Indicates that the device is asserting an ALS interrupt, writing a 1 will clear this status flag.
 */
 
 /*
@@ -430,13 +430,13 @@ public:
 
   /**
    * @brief  set az mode
-   * @param  mode  :0,Always start at zero when searching the best offset value
-                   :1,Always start at the previous (offset_c) with the auto-zero mechanism
+   * @param  mode  :0, Always start at zero when searching the best offset value
+                   :1, Always start at the previous (offset_c) with the auto-zero mechanism
    */
   void setAutoZeroMode(uint8_t mode);
   
   /**
-   * @brief  set az nth iteration type(Run autozero automatically every nth ALS iteration)
+   * @brief  set as nth iteration type(Run auto-zero automatically every nth ALS iteration)
    * @param  value :0,never
                    :7,only at first ALS cycle
                    :n, every nth time
@@ -483,7 +483,7 @@ private:
   uint8_t getDeviceID();
   
   /**
-   * @brief  Activating the internal oscillator to permit the timers and ADC channels to operate ,and activing the ALS function
+   * @brief  Activating the internal oscillator to permit the timers and ADC channels to operate ,and activate the ALS function
    */
   void setPowerALSADC();
 
