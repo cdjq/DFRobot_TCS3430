@@ -27,7 +27,7 @@ _pWire(pWire),_deviceAddr(DFRobot_TCS3430_ICC_ADDR)
   _cfg1Reg.amux = 0;
   _cfg1Reg.reservedBit4_7 = 0;
   
-  _cfg3Reg.reservedBit0_3 = 0;
+  _cfg3Reg.reservedBit0_3 = 12;
   _cfg3Reg.sai = 0;
   _cfg3Reg.reservedBit5_6 = 0;
   _cfg3Reg.intReadClear = 0;
@@ -87,7 +87,7 @@ void DFRobot_TCS3430:: disableALSADC()
 
 void DFRobot_TCS3430:: setWaitTimer(bool mode)
 {
-  if(mode = true){
+  if(mode){
     _enableReg.wen = 1;
     write(eRegENABLEAddr,*((uint8_t*)(&_enableReg)));
   }
